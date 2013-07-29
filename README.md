@@ -1,4 +1,4 @@
-Power-line-interference-canceller
+Adaptive Power Line Interference Canceller
 =================================
 
 The source code of a proposed algorithm for removal of power line interference from bio-medical signals (Intracortical, ECoG, EEG, ECG (EKG), EMG)
