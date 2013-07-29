@@ -1,7 +1,7 @@
 Power-line-interference-canceller
 =================================
 
-The source code of a proposed algorithm to remove power line interference in bio-medical signals (Intracortical, ECoG, EEG, ECG (EKG), EMG)
+The source code of a proposed algorithm for removal of power line interference from bio-medical signals (Intracortical, ECoG, EEG, ECG (EKG), EMG)
 
 The provided MATLAB .m file is the implementation of the proposed algorithm in 
 Mohammad Reza Keshtkaran and Zhi Yang, "Power Line Interference Cancellation in Neural Recording", Submitted to Journal of Neural Engineering, 8/2013.
@@ -10,14 +10,11 @@ You need MATLAB Software to run the program.
 
 For User Guide, please refer to "removePLI.m" or type "help removePLI" in the MATLAB command prompt.
 
-## Quick Start
+## Usage
 
-	Usage:
-```
-  $ s = removePLI(x, fs, M, B, P, W)
 ```
   x, input (contaminated) signal
-	s, output (clean) signal
+  s, output (clean) signal
   fs, sample rate in Hz
   M, number of harmonics to remove
   B, contains three elements [B0,Binf,Bst]: 
@@ -28,9 +25,13 @@ For User Guide, please refer to "removePLI.m" or type "help removePLI" in the MA
 	- P0, Initial settling time of the frequency estimator
 	- Pinf, Asymptotic settling time of the frequency estimator
 	- Pst, Rate of convergence to 95% of the asymptotic settling time
-	W, Settling time of the amplitude and phase estimator
-	
-	EXAMPLE:
+  W, Settling time of the amplitude and phase estimator
+```
+```
+>> s = removePLI(x, fs, M, B, P, W)
+```
+```
+  EXAMPLE:
 		fs = 500;
 		n = 120*fs; %2-min sequence	
 		t = 2*pi*(1:n)/fs;
@@ -43,13 +44,13 @@ For User Guide, please refer to "removePLI.m" or type "help removePLI" in the MA
 		pwelch(s,[],[],[],fs); title('PSD of the original signal')
 		figure; pwelch(x,[],[],[],fs); title('PSD of the contaminated signal')
 		figure; pwelch(sbar,[],[],[],fs); title('PSD of the cleaned signal')
-
+```
 
 ## Author
-** Mohammad Reza Keshtkaran **
+**Mohammad Reza Keshtkaran**
 
 ## Licence
-   Copyright (c) 2013, Mohammad Reza Keshtkaran <keshtkaran.github@gmail.com>
+   Copyright (c) 2013, Mohammad Reza Keshtkaran.
    All rights reserved.
    
    "This program" refers to "removePLI.m".
