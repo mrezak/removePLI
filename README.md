@@ -39,33 +39,35 @@ For User Guide, please refer to "removePLI.m" or type "help removePLI" in the MA
 		p = 80*sin(fline*t+randn) + 50*sin(2*fline*t+randn)...
 		  + 20*sin(3*fline*t+randn); % interference	
 		x = s + p;
-		sbar = removePLI(x, fs, 3, [50,0.1,1], [0.1,4,1], 4);
+		sbar = removePLI(x, fs, 3, [100,0.01,4], [0.1,2,5], 3);
 		pwelch(s,[],[],[],fs); title('PSD of the original signal')
-		figure; pwelch(x,[],[],[],fs); title('PSD of the contaminated signal')
-		figure; pwelch(sbar,[],[],[],fs); title('PSD of the cleaned signal')
+		figure; pwelch(x(fs:end),[],[],[],fs); 
+		title('PSD of the contaminated signal');
+		figure; pwelch(sbar(fs:end),[],[],[],fs); 
+		title('PSD after interference cancellation');
 ```
 
 ## Author
 **Mohammad Reza Keshtkaran**
-
 ## Licence
-   Copyright (c) 2013, Mohammad Reza Keshtkaran.
-   All rights reserved.
-   
-   "This program" refers to "removePLI.m".
-   This program is provided "AS IS" for non-commercial, educational 
- 	 and reseach purpose only. Any commercial use, of any kind, of
-	 this program is prohibited.
+  Copyright (c) 2013, Mohammad Reza Keshtkaran <keshtkaran.github@gmail.com>
+  
+  All rights reserved.
+  
+  "This program" refers to "removePLI.m".
+  This program is provided "AS IS" for non-commercial, educational 
+  and reseach purpose only. Any commercial use, of any kind, of 
+  this program is prohibited. The Copyright notice should remain intact.
 
-   This program is free software: you can redistribute it and/or modify
-   it under the terms of the GNU General Public License as published by
-   the Free Software Foundation, either version 3 of the License, or
-   (at your option) any later version.
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
 
-   This program is distributed in the hope that it will be useful,
-   but WITHOUT ANY WARRANTY; without even the implied warranty of
-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-   GNU General Public License for more details.
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
 
-   You should have received a copy of the GNU General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  You should have received a copy of the GNU General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
