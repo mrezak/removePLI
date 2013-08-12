@@ -1,4 +1,4 @@
-function s = removePLI(x, fs, M, B, P, W)
+function s = removePLI(x, fs, M, B, P, W, f_ac)
 %removePLI Power Line Interference Cancellation 
 %   This is an implementation of the proposed algorithm in,
 %	M. R. Keshtkaran, Z. Yang, "Power Line Interference Cancellation 
@@ -19,7 +19,8 @@ function s = removePLI(x, fs, M, B, P, W)
 %	- Pinf, Asymptotic settling time of the frequency estimator
 %	- Pst, Rate of convergence to 95% of the asymptotic settling time
 %	W, Settling time of the amplitude and phase estimator
-% 	
+% 	f_ac, Optional argument, the nominal AC frequency if known (50 Hz or 60 HZ)
+%
 %	EXAMPLE:
 %		fs = 500;
 %		n = 120*fs; %2-min sequence	
@@ -34,7 +35,7 @@ function s = removePLI(x, fs, M, B, P, W)
 % 		figure; pwelch(x(fs:end),[],[],[],fs); 
 %       title('PSD of the contaminated signal');
 % 		figure; pwelch(sbar(fs:end),[],[],[],fs); 
-%       title('PSD after interference cancellation');
+%      title('PSD after interference cancellation');
 %
 %   Licence:
 %   Downloaded from: https://github.com/mrezak/removePLI
@@ -58,7 +59,7 @@ function s = removePLI(x, fs, M, B, P, W)
 %   You should have received a copy of the GNU General Public License
 %   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-x=x(:)'; 
+x = x(:)' - mean(x); %removing the mean
 N = length(x);
 s = zeros(1,N);
 
@@ -81,7 +82,7 @@ if(length(lambda_a)==1), lambda_a =lambda_a*ones(1,M); end
 % initializing variables
 kappa_f = 0;
 kappa_k = zeros(1,M);
-D=10; C=D;
+D=10; C=5;
 f_n1=0; f_n2=0;
 
 % -- Alternative initialization:
@@ -99,10 +100,21 @@ a = zeros(1,M);
 b = zeros(1,M);
 
 
-% 40-70 Hz IIR filtering:
+% IIR Bandpass filtering:
+if(nargin==7)      % if AC frequency is known
+    if(f_ac==50)
+        Fc1 = 45;  % First Cutoff Frequency
+        Fc2 = 55;  % Second Cutoff Frequency        
+    elseif(f_ac==60)
+        Fc1 = 55;  % First Cutoff Frequency
+        Fc2 = 65;  % Second Cutoff Frequency        
+    end
+else    %if AC frequency is not known
+    %Default 40--70 Hz pass band
+    Fc1 = 40;  % First Cutoff Frequency
+    Fc2 = 70;  % Second Cutoff Frequency
+end
 ordr   = 4;   % Order
-Fc1 = 40;  % First Cutoff Frequency
-Fc2 = 70;  % Second Cutoff Frequency
 h  = fdesign.bandpass('N,F3dB1,F3dB2', ordr, Fc1, Fc2, fs);
 Hd = design(h, 'butter');
 x_f = filter(Hd,x);	%Bandpass Filtering
