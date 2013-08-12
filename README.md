@@ -25,9 +25,10 @@ For User Guide, please refer to "removePLI.m" or type "help removePLI" in the MA
 	- Pinf, Asymptotic settling time of the frequency estimator
 	- Pst, Rate of convergence to 95% of the asymptotic settling time
   W, Settling time of the amplitude and phase estimator
+  f_ac, Optional argument, the nominal AC frequency if known (50 Hz or 60 HZ)
 ```
 ```
->> s = removePLI(x, fs, M, B, P, W)
+>> s = removePLI(x, fs, M, B, P, W, f_ac)
 ```
 ```
   EXAMPLE:
