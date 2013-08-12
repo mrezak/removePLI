@@ -8,6 +8,9 @@ Mohammad Reza Keshtkaran and Zhi Yang, "Power Line Interference Cancellation in 
 You need MATLAB Software to run the program. 
 
 For User Guide, please refer to "removePLI.m" or type "help removePLI" in the MATLAB command prompt.
+The MATLAB script "test_removePLI.m" runs the algorithm on sample intracortical, ECoG, EEG and ECG signals.
+
+You can download the full package by clicking "Download Zip".
 
 ## Usage
 
