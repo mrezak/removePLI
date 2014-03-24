@@ -1,17 +1,18 @@
 Adaptive Power Line Interference Canceller
 =================================
 
-The source code of the proposed algorithm for removal of power line interference from neural signals.
-The provided MATLAB .m file is the implementation of the proposed algorithm in 
-Mohammad Reza Keshtkaran and Zhi Yang, "A Fast, Robust Algorithm for Power Line Interference Cancellation in Neural Recording", Submitted to Journal of Neural Engineering, 10/2013.
-If you find this program useful in your research, please give credit by citing the above paper.
+The source code of a fast and robust algorithm for removal of power line interference from neural signals.
+The provided MATLAB .m file is the implementation of the proposed algorithm in:
+**Mohammad Reza Keshtkaran and Zhi Yang, "A Fast, Robust Algorithm for Power Line Interference Cancellation in Neural Recording", Journal of Neural Engineering 11 026017, available at http://iopscience.iop.org/1741-2552/11/2/026017**
 
-You need MATLAB Software to run the program. 
+If you find this program useful in your research, please give credit by citing the above paper. If you have any question regarding the algorithm or implementation, do not hesitate to write to the author at one of the following addresses: keshtkaran AT ieee.org, keshtkaran AT nus.edu.sg
+
+You need MATLAB software to use this program. 
 
 For User Guide, please refer to "removePLI.m" or type "help removePLI" in the MATLAB command prompt.
 The MATLAB script "test_removePLI.m" runs the algorithm on sample intracortical, ECoG, EEG and ECG signals.
 
-You can download the full package by clicking "Download Zip".
+You can download the full package by clicking "Download Zip" on the right side of this page.
 
 ## Usage
 
