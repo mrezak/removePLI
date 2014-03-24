@@ -1,8 +1,9 @@
 function s = removePLI(x, fs, M, B, P, W, f_ac)
 %removePLI Power Line Interference Cancellation 
 %   This is an implementation of the proposed algorithm in,
-%	M. R. Keshtkaran, Z. Yang, "Power Line Interference Cancellation 
-%	in Neural Recording", Submitted to Journal of Neural Engineering, Aug-2013
+%   M. R. Keshtkaran and Z. Yang, “A fast, robust algorithm for power line 
+%   interference cancellation in neural recording,” J. Neural Eng., vol. 11,
+%   no. 2, p. 026017, Apr. 2014.
 %
 %	Usage:
 %	s = removePLI(x, fs, M, B, P, W)
