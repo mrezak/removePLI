@@ -1,8 +1,8 @@
 function s = removePLI(x, fs, M, B, P, W, f_ac)
 %removePLI Power Line Interference Cancellation 
 %   This is an implementation of the proposed algorithm in,
-%   M. R. Keshtkaran and Z. Yang, “A fast, robust algorithm for power line 
-%   interference cancellation in neural recording,” J. Neural Eng., vol. 11,
+%   M. R. Keshtkaran and Z. Yang, "A fast, robust algorithm for power line 
+%   interference cancellation in neural recording," J. Neural Eng., vol. 11,
 %   no. 2, p. 026017, Apr. 2014.
 %
 %	Usage:
@@ -65,7 +65,7 @@ N = length(x);
 s = zeros(1,N);
 
 % 3dB cutoff bandwidth
-alpha_f = (1-tan(pi*B(1)/fs))/(1+tan(pi*B(1)/fs));	%initial, \alpha_0
+alpha_f = (1-atan(pi*B(1)/fs))/(1+atan(pi*B(1)/fs));	%initial, \alpha_0
 alpha_inf = (1-tan(pi*B(2)/fs))/(1+tan(pi*B(2)/fs)); %asymptotic	
 alpha_st = exp(log(0.05)/(B(3)*fs+1));	%rate of change
 
@@ -74,7 +74,7 @@ lambda_f = exp(log(0.05)/(P(1)*fs+1));	%initial
 lambda_inf = exp(log(0.05)/(P(2)*fs+1));	%asymptotic
 lambda_st = exp(log(0.05)/(P(3)*fs+1));	%rate of change
 % Smoothing parameter (cut-off freq set at 90 Hz)
-gmma = (1-tan(pi*90/fs))/(1+tan(pi*90/fs));
+gmma = (1-tan(0.5*pi*min(90,fs/2)/fs))/(1+tan(0.5*pi*min(90,fs/2)/fs));
 
 % phase/amplitude estimator forgetting factor
 lambda_a = exp(log(0.05)/(W(1)*fs+1));
