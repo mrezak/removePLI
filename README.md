@@ -5,7 +5,7 @@ The source code of a fast and robust algorithm for removal of power line interfe
 The provided MATLAB .m file is the implementation of the proposed algorithm in:
 **Mohammad Reza Keshtkaran and Zhi Yang, "A Fast, Robust Algorithm for Power Line Interference Cancellation in Neural Recording", Journal of Neural Engineering 11 026017, available at http://iopscience.iop.org/1741-2552/11/2/026017**
 
-If you find this program useful in your research, please give credit by citing the above paper. If you have any question regarding the algorithm or implementation, do not hesitate to write to the author at one of the following addresses: keshtkaran AT ieee.org, keshtkaran AT nus.edu.sg
+If you find this program useful in your research, please give credit by citing the above paper. If you have any question regarding the algorithm or implementation, do not hesitate to write to the authors at one of the following addresses: keshtkaran AT ieee.org, keshtkaran AT nus.edu.sg
 
 You need MATLAB software to use this program. 
 
