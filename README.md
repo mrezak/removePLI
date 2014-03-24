@@ -1,7 +1,7 @@
 Adaptive Power Line Interference Canceller
 =================================
 
-The source code of a fast and robust algorithm for removal of power line interference from neural signals.
+The source code of a fast and robust algorithm for removal of power line interference from biomedical signals.
 The provided MATLAB .m file is the implementation of the proposed algorithm in:
 **Mohammad Reza Keshtkaran and Zhi Yang, "A Fast, Robust Algorithm for Power Line Interference Cancellation in Neural Recording", Journal of Neural Engineering 11 026017, available at http://iopscience.iop.org/1741-2552/11/2/026017**
 
