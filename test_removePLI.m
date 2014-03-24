@@ -4,8 +4,10 @@
 %   removal algorithm on intracortical, ECoG, EEG and ECG signals.
 %
 %   The algorithm is proposed in:
-%   M. R. Keshtkaran, Z. Yang, "Power Line Interference Cancellation 
-%  in Neural Recording", Submitted to Journal of Neural Engineering, Aug-2013
+%   M. R. Keshtkaran and Z. Yang, “A fast, robust algorithm for power line 
+%   interference cancellation in neural recording,” J. Neural Eng., vol. 11,
+%   no. 2, p. 026017, Apr. 2014.
+
 %
 %   This script requires the .m file "removePLI.m" and .mat files:
 %   "intracortical.mat" (from Plexon), "ECoG.mat" (from Riken lab),
