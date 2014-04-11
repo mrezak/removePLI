@@ -4,8 +4,8 @@
 %   removal algorithm on intracortical, ECoG, EEG and ECG signals.
 %
 %   The algorithm is proposed in:
-%   M. R. Keshtkaran and Z. Yang, “A fast, robust algorithm for power line 
-%   interference cancellation in neural recording,” J. Neural Eng., vol. 11,
+%   M. R. Keshtkaran and Z. Yang, "A fast, robust algorithm for power line 
+%   interference cancellation in neural recording," J. Neural Eng., vol. 11,
 %   no. 2, p. 026017, Apr. 2014.
 
 %
@@ -42,8 +42,8 @@ fs = 40000; %Sample rate (Hz)
 x = data/2^15*10*1e3; % Scaling to mV
 
 M = 6;  %number of harmonics to remove
-B = [50 .01 2] ;   
-P = [0.01 4 2] ;   
+B = [50 .2 1] ;   
+P = [0.1 4 1] ;   
 W = 2;
 
 idx = fs:length(x); % portion of signal to be used for PSD estimation
@@ -66,8 +66,8 @@ fs = 1000; %Sample rate (Hz)
 x = data; % Scaling to mV
 
 M = 7;  %number of harmonics to remove
-B = [50 .5 1] ;   
-P = [0.1 10 2] ;   
+B = [50 .2 1] ;   
+P = [0.1 4 1] ;   
 W = 1;
 
 idx = 1*fs:length(x); % portion of signal to be used for PSD estimation
@@ -116,7 +116,7 @@ fs = 250; %Sample rate (Hz)
 x = data; % Scaling to mV
 
 M = 3;  %number of harmonics to remove
-B = [50 .01 1];
+B = [50 .05 1];
 P = [0.01 2 1];
 W = 1.8;
 
