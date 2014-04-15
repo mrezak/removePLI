@@ -11,17 +11,18 @@ You need MATLAB software to use this program.
 
 For User Guide, please refer to "removePLI.m" or type "help removePLI" in the MATLAB command prompt.
 The MATLAB script "test_removePLI.m" runs the algorithm on sample intracortical, ECoG, EEG and ECG signals.
-Please refer to "remove_PLI_multichan.m" for an optimized implementation for multichannel data.
+Please refer to "removePLI_multichan.m" for an optimized implementation for multichannel data.
 
 You can download the full package by clicking "Download Zip" on the right side of this page.
 
 ## Usage
 For Graphical User Interface:
 ```
->> remove_PLI_gui
+>> removePLI_gui
 ```
 For running from the command line:
 ```
+>> s = removePLI(x, fs, M, B, P, W, f_ac)
 >> s = removePLI_multichan(x, fs, M, B, P, W, f_ac, freqChan)
 ```
 ```
@@ -40,7 +41,7 @@ For running from the command line:
   W, Settling time of the amplitude and phase estimator
   f_ac, Optional argument, the nominal AC frequency if known (50 Hz or 60 HZ)
   freqChan, Optional argument, The channel number to be used for frequency
-     estimation. []: use the first channel (default), 0: Perform frequency
+     estimation. []: uses the first channel (default), 0: Performs frequency
      estimation indivisually for all the channels (similar to removePLI)
 ```
 ```
