@@ -1,5 +1,5 @@
-function s = removePLI(x, fs, M, B, P, W, f_ac)
-%removePLI Power Line Interference Cancellation 
+function s = removePLI_multichan(x, fs, M, B, P, W, f_ac, freqChan)
+%removePLI Power Line Interference Cancellation for multi channel data
 %   This is an implementation of the proposed algorithm in,
 %   M. R. Keshtkaran and Z. Yang, "A fast, robust algorithm for power line 
 %   interference cancellation in neural recording," J. Neural Eng., vol. 11,
@@ -8,7 +8,7 @@ function s = removePLI(x, fs, M, B, P, W, f_ac)
 %   http://arxiv.org/abs/1402.6862
 %
 %	Usage:
-%	s = removePLI(x, fs, M, B, P, W, f_ac)
+%	s = removePLI_multichan(x, fs, M, B, P, W, f_ac, freqChan)
 %   x, input (contaminated) signal
 %	s, output (clean) signal
 %   fs, sample rate in Hz
@@ -23,21 +23,26 @@ function s = removePLI(x, fs, M, B, P, W, f_ac)
 %	- Pst, Rate of convergence to 95% of the asymptotic settling time
 %	W, Settling time of the amplitude and phase estimator
 % 	f_ac, Optional argument, the nominal AC frequency if known (50 Hz or 60 HZ)
+%   freqChan, Optional argument, The channel number to be used for frequency
+%   estimation. []: use the first channel (default), 0: Perform frequency
+%   estimation indivisually for all the channels (similar to removePLI)
 %
 %	EXAMPLE:
 %		fs = 500;
-%		n = 120*fs; %2-min sequence	
+%		n = 60*fs; %1-min sequence	
+%       m = 10; %number of channels
 %		t = 2*pi*(1:n)/fs;
 %		fline = 60 + randn; %ramdom interference frequency
-%		s = filter(1,[1,-0.99],100*randn(1,n)); %1/f PSD
-%		p = 80*sin(fline*t+randn) + 50*sin(2*fline*t+randn)...
-%		  + 20*sin(3*fline*t+randn); % interference	
+%		s = filter(1,[1,-0.99],100*randn(n,m))'; %1/f PSD
+%		p = bsxfun(@times,sin(fline*t+randn), (80+5*randn(m,1))) ...
+%          + bsxfun(@times,sin(2*fline*t+randn), (50+5*rand(m,1))) ...
+%		  + bsxfun(@times,sin(3*fline*t+randn), (20+5*randn(m,1))); % interference	
 %		x = s + p;
-% 		sbar = removePLI(x, fs, 3, [100,0.01,4], [0.1,2,5], 3);
-% 		pwelch(s,[],[],[],fs); title('PSD of the original signal')
-% 		figure; pwelch(x(fs:end),[],[],[],fs); 
+% 		sbar = removePLI_multichan(x, fs, 3, [50,0.01,4], [0.1,2,4], 2);
+% 		pwelch(s(1,:),[],[],[],fs); title('PSD of the original signal')
+% 		figure; pwelch(x(1,fs:end),[],[],[],fs); 
 %       title('PSD of the contaminated signal');
-% 		figure; pwelch(sbar(fs:end),[],[],[],fs); 
+% 		figure; pwelch(sbar(1,fs:end),[],[],[],fs); 
 %      title('PSD after interference cancellation');
 %
 %   Licence:
@@ -62,9 +67,42 @@ function s = removePLI(x, fs, M, B, P, W, f_ac)
 %   You should have received a copy of the GNU General Public License
 %   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-x = x(:)' - mean(x); %removing the mean
-N = length(x);
-s = zeros(1,N);
+[Cnum,N] = size(x);
+s = zeros(Cnum,N);
+
+if(nargin>6)      % if AC frequency is known
+    if(f_ac==50)
+        Fc1 = 48;  % First Cutoff Frequency
+        Fc2 = 52;  % Second Cutoff Frequency        
+    elseif(f_ac==60)
+        Fc1 = 58;  % First Cutoff Frequency
+        Fc2 = 62;  % Second Cutoff Frequency        
+    else
+        %Default 40--70 Hz pass band
+        Fc1 = 40;  % First Cutoff Frequency
+        Fc2 = 70;  % Second Cutoff Frequency
+    end
+else    %if AC frequency is not known
+    %Default 40--70 Hz pass band
+    Fc1 = 40;  % First Cutoff Frequency
+    Fc2 = 70;  % Second Cutoff Frequency
+    f_ac = [];
+end
+
+if(nargin>7)      % select channel for frequency estimation
+    if isempty(freqChan)
+        freqChan = 1;
+    elseif(freqChan == 0) %run removePLI.m on each channel separately
+        for CC = 1:Cnum
+            s(CC,:) = removePLI(x(CC,:),fs,M,B,P,W,f_ac);
+        end
+        return %Exit
+    end
+else
+    freqChan = 1;
+end
+
+x = bsxfun(@minus,x,mean(x,2)); %removing the mean
 
 % 3dB cutoff bandwidth
 alpha_f = (1-atan(pi*B(1)/fs))/(1+atan(pi*B(1)/fs));	%initial, \alpha_0
@@ -97,35 +135,16 @@ u_kp = 1*ones(1,M); %u_k
 u_k = 1*ones(1,M); %u'_k
 
 %initializing the RLS parameters
-r1 = 100*ones(1,M);
-r4 = 100*ones(1,M);
-a = zeros(1,M);
-b = zeros(1,M);
-
+r1 = 100*ones(Cnum,M);
+r4 = 100*ones(Cnum,M);
+a = zeros(Cnum,M);
+b = zeros(Cnum,M);
 
 % IIR Bandpass filtering:
-if(nargin>6)      % if AC frequency is known
-    if(f_ac==50)
-        Fc1 = 48;  % First Cutoff Frequency
-        Fc2 = 52;  % Second Cutoff Frequency        
-    elseif(f_ac==60)
-        Fc1 = 58;  % First Cutoff Frequency
-        Fc2 = 62;  % Second Cutoff Frequency        
-    else
-        %Default 40--70 Hz pass band
-        Fc1 = 40;  % First Cutoff Frequency
-        Fc2 = 70;  % Second Cutoff Frequency
-    end
-else    %if AC frequency is not known
-    %Default 40--70 Hz pass band
-    Fc1 = 40;  % First Cutoff Frequency
-    Fc2 = 70;  % Second Cutoff Frequency
-    f_ac = [];
-end
 ordr   = 4;   % Order
 h  = fdesign.bandpass('N,F3dB1,F3dB2', ordr, Fc1, Fc2, fs);
 Hd = design(h, 'butter');
-x_f = filter(Hd,x);	%Bandpass Filtering
+x_f = filter(Hd,x(freqChan,:));	%Bandpass Filtering
 x_f = [0 diff(x_f)];		%First Difference
 
 %--------- Start of data processing:
@@ -149,7 +168,7 @@ for n=1:N
     
 	% Discrete-Time Oscillators
     kappa_k(2) =1; kappa_k(1) = kappa_f;
-    e=x(n);
+    e=x(:,n);
     for k=1:M %for each harmonic do:
         %calculating Cos(kw) for k=1,2...
         kappa_k(k+2) = 2*kappa_f*kappa_k(k+1) - kappa_k(k); 
@@ -165,18 +184,19 @@ for n=1:N
         if G<0, G=1;end
         u_kp(k) = G * u_kp(k);
         u_k(k) = G * u_k(k);
-
+        
+        % Process multiple channels
         % Phase/Amplitude Adaptation
-        sincmp = a(k)*u_k(k) + b(k)*u_kp(k);
+        sincmp = a(:,k)*u_k(k) + b(:,k)*u_kp(k);
         e = e - sincmp;
         %--- Simplified RLS
-        r1(k) = lambda_a(k)*r1(k) + u_k(k)^2;
-        r4(k) = lambda_a(k)*r4(k) + u_kp(k)^2;
-        a(k) = a(k) + u_k(k)*e/r1(k);
-        b(k) = b(k)  + u_kp(k)*e/r4(k); 
+        r1(:,k) = lambda_a(k)*r1(:,k) + u_k(k)^2;
+        r4(:,k) = lambda_a(k)*r4(:,k) + u_kp(k)^2;
+        a(:,k) = a(:,k) + u_k(k)*e./r1(:,k);
+        b(:,k) = b(:,k)  + u_kp(k)*e./r4(:,k); 
         %------
    end
-   s(n)=e;
+   s(:,n)=e;
 end
 
 end

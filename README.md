@@ -11,11 +11,19 @@ You need MATLAB software to use this program.
 
 For User Guide, please refer to "removePLI.m" or type "help removePLI" in the MATLAB command prompt.
 The MATLAB script "test_removePLI.m" runs the algorithm on sample intracortical, ECoG, EEG and ECG signals.
+Please refer to "remove_PLI_multichan.m" for an optimized implementation for multichannel data.
 
 You can download the full package by clicking "Download Zip" on the right side of this page.
 
 ## Usage
-
+For Graphical User Interface:
+```
+>> remove_PLI_gui
+```
+For running from the command line:
+```
+>> s = removePLI_multichan(x, fs, M, B, P, W, f_ac, freqChan)
+```
 ```
   x, input (contaminated) signal
   s, output (clean) signal
@@ -31,25 +39,27 @@ You can download the full package by clicking "Download Zip" on the right side o
 	- Pst, Rate of convergence to 95% of the asymptotic settling time
   W, Settling time of the amplitude and phase estimator
   f_ac, Optional argument, the nominal AC frequency if known (50 Hz or 60 HZ)
-```
-```
->> s = removePLI(x, fs, M, B, P, W, f_ac)
+  freqChan, Optional argument, The channel number to be used for frequency
+     estimation. []: use the first channel (default), 0: Perform frequency
+     estimation indivisually for all the channels (similar to removePLI)
 ```
 ```
   EXAMPLE:
 		fs = 500;
-		n = 120*fs; %2-min sequence	
+		n = 60*fs; %1-min sequence	
+		m = 10; %number of channels
 		t = 2*pi*(1:n)/fs;
 		fline = 60 + randn; %ramdom interference frequency
-		s = filter(1,[1,-0.99],100*randn(1,n)); %1/f PSD
-		p = 80*sin(fline*t+randn) + 50*sin(2*fline*t+randn)...
-		  + 20*sin(3*fline*t+randn); % interference	
+		s = filter(1,[1,-0.99],100*randn(n,m))'; %1/f PSD
+		p = bsxfun(@times,sin(fline*t+randn), (80+5*randn(m,1))) ...
+          + bsxfun(@times,sin(2*fline*t+randn), (50+5*rand(m,1))) ...
+		  + bsxfun(@times,sin(3*fline*t+randn), (20+5*randn(m,1))); % interference	
 		x = s + p;
-		sbar = removePLI(x, fs, 3, [100,0.01,4], [0.1,2,5], 3);
-		pwelch(s,[],[],[],fs); title('PSD of the original signal')
-		figure; pwelch(x(fs:end),[],[],[],fs); 
+ 		sbar = removePLI_multichan(x, fs, 3, [50,0.01,4], [0.1,2,4], 2);
+ 		pwelch(s(1,:),[],[],[],fs); title('PSD of the original signal')
+ 		figure; pwelch(x(1,fs:end),[],[],[],fs); 
 		title('PSD of the contaminated signal');
-		figure; pwelch(sbar(fs:end),[],[],[],fs); 
+ 		figure; pwelch(sbar(1,fs:end),[],[],[],fs); 
 		title('PSD after interference cancellation');
 ```
 
@@ -60,7 +70,7 @@ You can download the full package by clicking "Download Zip" on the right side o
   
   All rights reserved.
   
-  "This program" refers to "removePLI.m".
+  "This program" refers to the m-files in the whole package.
   This program is provided "AS IS" for non-commercial, educational 
   and reseach purpose only. Any commercial use, of any kind, of 
   this program is prohibited. The Copyright notice should remain intact.
