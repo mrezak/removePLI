@@ -13,7 +13,7 @@ For User Guide, please refer to "removePLI.m" or type "help removePLI" in the MA
 The MATLAB script "test_removePLI.m" runs the algorithm on sample intracortical, ECoG, EEG and ECG signals.
 Please refer to "removePLI_multichan.m" for an optimized implementation for multichannel data.
 
-You can download the full package by clicking "Download Zip" on the right side of this page.
+You can download the full package [Here](https://github.com/mrezak/removePLI/archive/master.zip).
 
 ## Usage
 For Graphical User Interface:
