@@ -67,7 +67,7 @@ For running from the command line:
 ## Author
 **Mohammad Reza Keshtkaran**
 ## Licence
-  Copyright (c) 2013, Mohammad Reza Keshtkaran <keshtkaran.github@gmail.com>
+  Copyright (c) 2013, Mohammad Reza Keshtkaran <mrezak.github@gmail.com>
   
   All rights reserved.
   
