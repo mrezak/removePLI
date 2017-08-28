@@ -97,24 +97,21 @@ u_kp = 1*ones(1,M); %u_k
 u_k = 1*ones(1,M); %u'_k
 
 %initializing the RLS parameters
-r1 = 100*ones(1,M);
-r4 = 100*ones(1,M);
+r1 = 10*ones(1,M);
+r4 = 10*ones(1,M);
 a = zeros(1,M);
 b = zeros(1,M);
 
 
 % IIR Bandpass filtering:
 if(nargin>6)      % if AC frequency is known
-    if(f_ac==50)
-        Fc1 = 48;  % First Cutoff Frequency
-        Fc2 = 52;  % Second Cutoff Frequency        
-    elseif(f_ac==60)
-        Fc1 = 58;  % First Cutoff Frequency
-        Fc2 = 62;  % Second Cutoff Frequency        
-    else
-        %Default 40--70 Hz pass band
-        Fc1 = 40;  % First Cutoff Frequency
-        Fc2 = 70;  % Second Cutoff Frequency
+    if length(f_ac)==2
+        Fc1 = f_ac(1);  % First Cutoff Frequency
+        Fc2 = f_ac(2);  % Second Cutoff Frequency               
+     else
+        %Custom center frequency of pass band
+        Fc1 = f_ac-2;  % First Cutoff Frequency
+        Fc2 = f_ac+2;  % Second Cutoff Frequency
     end
 else    %if AC frequency is not known
     %Default 40--70 Hz pass band
@@ -122,6 +119,7 @@ else    %if AC frequency is not known
     Fc2 = 70;  % Second Cutoff Frequency
     f_ac = [];
 end
+
 ordr   = 4;   % Order
 h  = fdesign.bandpass('N,F3dB1,F3dB2', ordr, Fc1, Fc2, fs);
 Hd = design(h, 'butter');
@@ -148,7 +146,8 @@ for n=1:N
     lambda_f = lambda_st*lambda_f + (1-lambda_st)*lambda_inf;
     
 	% Discrete-Time Oscillators
-    kappa_k(2) =1; kappa_k(1) = kappa_f;
+    kappa_k(2) = 1; kappa_k(1) = kappa_f;
+
     e=x(n);
     for k=1:M %for each harmonic do:
         %calculating Cos(kw) for k=1,2...
@@ -162,7 +161,7 @@ for n=1:N
         
 		% Gain Control
         G = 1.5 - (u_kp(k)^2 - (kappa_k(k+2)-1)/(kappa_k(k+2)+1)*u_k(k)^2);
-        if G<0, G=1;end
+        if G<=0, G=1;end
         u_kp(k) = G * u_kp(k);
         u_k(k) = G * u_k(k);
 
